@@ -49,6 +49,7 @@ Engine header files so we can include it now in our code.
 #include <iostream>
 #include <Bullet.h>
 #include <BulletNodesManager.h>
+#include <UIGame.h>
 /*
 In the Irrlicht Engine, everything can be found in the namespace 'irr'. So if
 you want to use a class of the engine, you have to write irr:: before the name
@@ -176,6 +177,7 @@ int main()
 		{
 			const u32 now = device->getTimer()->getTime();
 			const f32 frameDeltaTime = (f32)(now - then) / 1000.f; // Time in seconds
+//<<<<<<< HEAD
 			then = now;
 
 			if (receiver.IsKeyDown(irr::KEY_ESCAPE))
@@ -198,8 +200,24 @@ int main()
 			smgr->drawAll();
 			guienv->drawAll();
 
+			&CGUIBar::renderGUIBars;
+			driver->endScene();
+/*=======
+			then = now;
+
+			if (receiver.IsKeyDown(irr::KEY_ESCAPE))
+				break;
+
+			driver->beginScene(true, true, SColor(255, 100, 101, 140));
+
+			smgr->drawAll();
+			guienv->drawAll();
+			
+			&CGUIBar::renderGUIBars;
+			
 			driver->endScene();
 
+>>>>>>> b03025b9a3e0310a241e3b9a035c211083254e08*/
 			int fps = driver->getFPS();
 
 			if (lastFPS != fps)
