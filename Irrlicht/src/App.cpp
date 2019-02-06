@@ -47,7 +47,7 @@ Engine header files so we can include it now in our code.
 #include <Scene.h>
 #include <Player.h>
 #include <iostream>
-
+#include <UIGame.h>
 /*
 In the Irrlicht Engine, everything can be found in the namespace 'irr'. So if
 you want to use a class of the engine, you have to write irr:: before the name
@@ -182,7 +182,9 @@ int main()
 
 			smgr->drawAll();
 			guienv->drawAll();
-
+			
+			&CGUIBar::renderGUIBars;
+			
 			driver->endScene();
 
 			int fps = driver->getFPS();
