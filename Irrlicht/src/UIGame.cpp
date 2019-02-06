@@ -35,6 +35,11 @@ CGUIBar::CGUIBar(int x1, int y1, int x2, int y2, int maxValue, video::ITexture* 
 
 }
 
+CGUIBar::~CGUIBar()
+{
+
+}
+
 void CGUIBar::renderGUIBars(video::IVideoDriver* driver) {
 
 	double delta; //status bar variation

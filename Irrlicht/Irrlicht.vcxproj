@@ -168,6 +168,7 @@
     <ClCompile Include="src\App.cpp" />
     <ClCompile Include="src\EventReceiver.cpp" />
     <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\UIGame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\BulletNodesManager.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="include\EventReceiver.h" />
     <ClInclude Include="include\Player.h" />
     <ClInclude Include="include\Scene.h" />
+    <ClInclude Include="include\UIGame.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

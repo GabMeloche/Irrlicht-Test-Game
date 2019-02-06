@@ -126,10 +126,7 @@ int main()
 	ISceneManager* smgr = scene.getSmgr();
 	IVideoDriver* driver = device->getVideoDriver();
 	IGUIEnvironment* guienv = device->getGUIEnvironment();
-
-	// future UI
-	guienv->addStaticText(L"Hello World! This is the Irrlicht Software renderer!",
-		rect<s32>(10, 10, 260, 22), true);
+	CGUIBar healthBar(30, 540, 200, 570, 100, 0, "bleh");
 
 	IAnimatedMesh* sydneyMesh = smgr->getMesh("res/media/sydney.md2");
 
@@ -175,9 +172,9 @@ int main()
 
 		if (device->isWindowActive())
 		{
+			healthBar.setBarValue(player.getHealth());
 			const u32 now = device->getTimer()->getTime();
 			const f32 frameDeltaTime = (f32)(now - then) / 1000.f; // Time in seconds
-//<<<<<<< HEAD
 			then = now;
 
 			if (receiver.IsKeyDown(irr::KEY_ESCAPE))
@@ -200,24 +197,9 @@ int main()
 			smgr->drawAll();
 			guienv->drawAll();
 
-			&CGUIBar::renderGUIBars;
-			driver->endScene();
-/*=======
-			then = now;
-
-			if (receiver.IsKeyDown(irr::KEY_ESCAPE))
-				break;
-
-			driver->beginScene(true, true, SColor(255, 100, 101, 140));
-
-			smgr->drawAll();
-			guienv->drawAll();
-			
-			&CGUIBar::renderGUIBars;
-			
+			healthBar.renderGUIBars(driver);
 			driver->endScene();
 
->>>>>>> b03025b9a3e0310a241e3b9a035c211083254e08*/
 			int fps = driver->getFPS();
 
 			if (lastFPS != fps)
