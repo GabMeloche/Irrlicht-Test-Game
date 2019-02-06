@@ -2,6 +2,7 @@
 #include <irrlicht.h>
 #include <EventReceiver.h>
 #include <Player.h>
+#include <IBillboardSceneNode.h>
 
 using namespace irr;
 using namespace core;
@@ -45,11 +46,10 @@ Scene::Scene(IrrlichtDevice* p_device)
 		selector = smgr->createOctreeTriangleSelector(
 			mapNode->getMesh(), mapNode, 128);
 		mapNode->setTriangleSelector(selector);
-		// We're not done with this selector yet, so don't drop it.
 	}
 	//CAMERA SETUP
 	scene::ICameraSceneNode* camera =
-		smgr->addCameraSceneNodeFPS(0, 100.0f, .3f, ID_IsNotPickable, 0, 0, true, 3.f);
+		smgr->addCameraSceneNodeFPS(0, 100.0f, 0.3f, ID_IsNotPickable, 0, 0, true, 3.0f);
 	camera->setPosition(core::vector3df(50, 50, -60));
 	camera->setTarget(core::vector3df(-70, 30, -60));
 
@@ -62,15 +62,43 @@ Scene::Scene(IrrlichtDevice* p_device)
 		camera->addAnimator(anim);
 		anim->drop();  // And likewise, drop the animator when we're done referring to it.
 	}
+
+	//bullet load
+	IBillboardSceneNode* tmpBillboard{};
+	billboardNode = tmpBillboard;
+	dimension2d<f32> billboardSize(10.0f, 10.0f);
+	SMaterial* billboardMaterial = new SMaterial();
+	billboardMaterial->setTexture(0, p_device->getVideoDriver()->getTexture("res/media/particlegreen.jpg"));
+	billboardMaterial->setFlag(EMF_LIGHTING, false);
+	//billBoardNode->setMaterialType(video::EMT_REFLECTION_2_LAYER);
+
+	billboardMesh = smgr->getGeometryCreator()->createPlaneMesh(
+		billboardSize, dimension2d<u32>(1, 1),
+		billboardMaterial,
+		dimension2df(1, 1)
+		);
+ 
+	//smgr->addBillboardSceneNode(billBoardNode);
 }
 
 
 Scene::~Scene()
 {
 	smgr->clear();
+
 }
 
 ISceneManager* Scene::getSmgr()
 {
 	return smgr;
+}
+
+IBillboardSceneNode* Scene::getBillboardNode()
+{
+	return billboardNode;
+}
+
+void Scene::setBillboardPos(core::vector3df pos)
+{
+	billboardNode->setPosition(pos);
 }

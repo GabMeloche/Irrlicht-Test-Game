@@ -20,6 +20,9 @@ public:
 
 	virtual bool IsKeyDown(EKEY_CODE keyCode) const;
 
+	virtual bool IsMouseDown(int button) const;
+
 private:
 	bool KeyIsDown[KEY_KEY_CODES_COUNT];
+	bool MouseIsDown[3];
 };

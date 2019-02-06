@@ -47,7 +47,8 @@ Engine header files so we can include it now in our code.
 #include <Scene.h>
 #include <Player.h>
 #include <iostream>
-
+#include <Bullet.h>
+#include <BulletNodesManager.h>
 /*
 In the Irrlicht Engine, everything can be found in the namespace 'irr'. So if
 you want to use a class of the engine, you have to write irr:: before the name
@@ -109,8 +110,9 @@ enum
 int main()
 {
 	EventReceiver receiver;
-
-	IrrlichtDevice *device =
+	Player player;
+	BulletNodesManager bulletsManager;
+	IrrlichtDevice* device =
 		createDevice(video::EDT_DIRECT3D9, dimension2d<u32>(800, 600), 16,
 			false, false, false, &receiver);
 
@@ -168,6 +170,7 @@ int main()
 
 	while (device->run())
 	{
+		ICameraSceneNode* camera = smgr->getActiveCamera();
 
 		if (device->isWindowActive())
 		{
@@ -177,6 +180,18 @@ int main()
 
 			if (receiver.IsKeyDown(irr::KEY_ESCAPE))
 				break;
+
+			if (receiver.IsMouseDown(0))
+			{
+				bulletsManager.createBullet(smgr, driver);
+			}
+
+			//make bullets move
+			for (int i = 0; i < bulletsManager.getBulletsShot(); ++i)
+			{
+				vector3df newPos = bulletsManager[i].getNode()->getPosition();
+				bulletsManager[i].getNode()->setPosition(bulletsManager[i].getVec() + newPos);
+			}
 
 			driver->beginScene(true, true, SColor(255, 100, 101, 140));
 
@@ -189,7 +204,7 @@ int main()
 
 			if (lastFPS != fps)
 			{
-				core::stringw tmp(L"Movement Example - Irrlicht Engine [");
+				core::stringw tmp(L"Quake Remake - Irrlicht Engine [");
 				tmp += driver->getName();
 				tmp += L"] fps: ";
 				tmp += fps;

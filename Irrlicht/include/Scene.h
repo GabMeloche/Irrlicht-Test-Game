@@ -17,9 +17,13 @@ public:
 	~Scene();
 
 	ISceneManager* getSmgr();
+	IBillboardSceneNode* getBillboardNode();
+	void setBillboardPos(core::vector3df pos);
 private:
 	ISceneManager* smgr;
-	scene::IAnimatedMesh* mapMesh;
-	scene::IMeshSceneNode* mapNode;
+	IAnimatedMesh* mapMesh;
+	IMeshSceneNode* mapNode;
+	IBillboardSceneNode* billboardNode;
+	IMesh* billboardMesh;
 };
 

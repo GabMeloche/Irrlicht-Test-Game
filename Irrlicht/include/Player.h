@@ -2,8 +2,6 @@
 
 class Player
 {
-private:
-	int health;
 public:
 	Player();
 	~Player();
@@ -11,4 +9,7 @@ public:
 
 	int getHealth();
 	void setHealth(int p_health);
+
+private:
+	int health;
 };

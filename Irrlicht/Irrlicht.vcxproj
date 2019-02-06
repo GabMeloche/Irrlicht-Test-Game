@@ -162,12 +162,16 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\BulletNodesManager.cpp" />
+    <ClCompile Include="src\Bullet.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\App.cpp" />
     <ClCompile Include="src\EventReceiver.cpp" />
     <ClCompile Include="src\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\BulletNodesManager.h" />
+    <ClInclude Include="include\Bullet.h" />
     <ClInclude Include="include\EventReceiver.h" />
     <ClInclude Include="include\Player.h" />
     <ClInclude Include="include\Scene.h" />
