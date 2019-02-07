@@ -162,6 +162,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Enemy.cpp" />
     <ClCompile Include="src\BulletNodesManager.cpp" />
     <ClCompile Include="src\Bullet.cpp" />
     <ClCompile Include="src\Scene.cpp" />
@@ -171,6 +172,8 @@
     <ClCompile Include="src\UIGame.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\CrossHair.h" />
+    <ClInclude Include="include\Enemy.h" />
     <ClInclude Include="include\BulletNodesManager.h" />
     <ClInclude Include="include\Bullet.h" />
     <ClInclude Include="include\EventReceiver.h" />

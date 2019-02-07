@@ -2,6 +2,7 @@
 #include <irrlicht.h>
 #include <EventReceiver.h>
 #include <Player.h>
+#include <BulletNodesManager.h>
 
 using namespace irr;
 using namespace core;

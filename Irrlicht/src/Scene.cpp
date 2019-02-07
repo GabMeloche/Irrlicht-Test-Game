@@ -13,17 +13,8 @@ using namespace gui;
 
 enum
 {
-	// I use this ISceneNode ID to indicate a scene node that is
-	// not pickable by getSceneNodeAndCollisionPointFromRay()
 	ID_IsNotPickable = 0,
-
-	// I use this flag in ISceneNode IDs to indicate that the
-	// scene node can be picked by ray selection.
 	IDFlag_IsPickable = 1 << 0,
-
-	// I use this flag in ISceneNode IDs to indicate that the
-	// scene node can be highlighted.  In this example, the
-	// homonids can be highlighted, but the level mesh can't.
 	IDFlag_IsHighlightable = 1 << 1
 };
 
@@ -47,6 +38,7 @@ Scene::Scene(IrrlichtDevice* p_device)
 			mapNode->getMesh(), mapNode, 128);
 		mapNode->setTriangleSelector(selector);
 	}
+
 	//CAMERA SETUP
 	scene::ICameraSceneNode* camera =
 		smgr->addCameraSceneNodeFPS(0, 100.0f, 0.3f, ID_IsNotPickable, 0, 0, true, 3.0f);
@@ -56,29 +48,12 @@ Scene::Scene(IrrlichtDevice* p_device)
 	if (selector)
 	{
 		scene::ISceneNodeAnimator* anim = smgr->createCollisionResponseAnimator(
-			selector, camera, core::vector3df(30, 50, 30),
+			selector, camera, core::vector3df(30, 40, 30),
 			core::vector3df(0, -10, 0), core::vector3df(0, 30, 0));
-		selector->drop(); // As soon as we're done with the selector, drop it.
+		selector->drop();
 		camera->addAnimator(anim);
-		anim->drop();  // And likewise, drop the animator when we're done referring to it.
+		anim->drop();
 	}
-
-	//bullet load
-	IBillboardSceneNode* tmpBillboard{};
-	billboardNode = tmpBillboard;
-	dimension2d<f32> billboardSize(10.0f, 10.0f);
-	SMaterial* billboardMaterial = new SMaterial();
-	billboardMaterial->setTexture(0, p_device->getVideoDriver()->getTexture("res/media/particlegreen.jpg"));
-	billboardMaterial->setFlag(EMF_LIGHTING, false);
-	//billBoardNode->setMaterialType(video::EMT_REFLECTION_2_LAYER);
-
-	billboardMesh = smgr->getGeometryCreator()->createPlaneMesh(
-		billboardSize, dimension2d<u32>(1, 1),
-		billboardMaterial,
-		dimension2df(1, 1)
-		);
- 
-	//smgr->addBillboardSceneNode(billBoardNode);
 }
 
 

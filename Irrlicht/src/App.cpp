@@ -50,69 +50,26 @@ Engine header files so we can include it now in our code.
 #include <Bullet.h>
 #include <BulletNodesManager.h>
 #include <UIGame.h>
-/*
-In the Irrlicht Engine, everything can be found in the namespace 'irr'. So if
-you want to use a class of the engine, you have to write irr:: before the name
-of the class. For example to use the IrrlichtDevice write: irr::IrrlichtDevice.
-To get rid of the irr:: in front of the name of every class, we tell the
-compiler that we use that namespace from now on, and we will not have to write
-irr:: anymore.
-*/
-using namespace irr;
+#include <Enemy.h>
+#include <CrossHair.h>
 
-/*
-There are 5 sub namespaces in the Irrlicht Engine. Take a look at them, you can
-read a detailed description of them in the documentation by clicking on the top
-menu item 'Namespace List' or by using this link:
-http://irrlicht.sourceforge.net/docu/namespaces.html
-Like the irr namespace, we do not want these 5 sub namespaces now, to keep this
-example simple. Hence, we tell the compiler again that we do not want always to
-write their names.
-*/
+using namespace irr;
 using namespace core;
 using namespace scene;
 using namespace video;
 using namespace io;
 using namespace gui;
 
-/*
-To be able to use the Irrlicht.DLL file, we need to link with the Irrlicht.lib.
-We could set this option in the project settings, but to make it easy, we use a
-pragma comment lib for VisualStudio. On Windows platforms, we have to get rid
-of the console window, which pops up when starting a program with main(). This
-is done by the second pragma. We could also use the WinMain method, though
-losing platform independence then.
-*/
-/*#ifdef _IRR_WINDOWS_
-#pragma comment(lib, "Irrlicht.lib")
-#pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
-#endif*/
-
-/*
-This is the main method. We can now use main() on every platform.
-*/
-
 enum
 {
-	// I use this ISceneNode ID to indicate a scene node that is
-	// not pickable by getSceneNodeAndCollisionPointFromRay()
 	ID_IsNotPickable = 0,
-
-	// I use this flag in ISceneNode IDs to indicate that the
-	// scene node can be picked by ray selection.
 	IDFlag_IsPickable = 1 << 0,
-
-	// I use this flag in ISceneNode IDs to indicate that the
-	// scene node can be highlighted.  In this example, the
-	// homonids can be highlighted, but the level mesh can't.
 	IDFlag_IsHighlightable = 1 << 1
 };
 
-int main()
+/*void Init()
 {
 	EventReceiver receiver;
-	Player player;
-	BulletNodesManager bulletsManager;
 	IrrlichtDevice* device =
 		createDevice(video::EDT_DIRECT3D9, dimension2d<u32>(800, 600), 16,
 			false, false, false, &receiver);
@@ -126,50 +83,57 @@ int main()
 	ISceneManager* smgr = scene.getSmgr();
 	IVideoDriver* driver = device->getVideoDriver();
 	IGUIEnvironment* guienv = device->getGUIEnvironment();
-	CGUIBar healthBar(30, 540, 200, 570, 100, 0, "bleh");
+	CGUIBar healthBar(30, 540, 200, 570, 100, 0, "Health");
 
-	IAnimatedMesh* sydneyMesh = smgr->getMesh("res/media/sydney.md2");
+	BulletNodesManager bulletsManager;
+	bulletsManager.setSmgr(smgr);
 
-	if (!sydneyMesh)
-	{
-		device->drop();
+	Player player;
+	Enemy enemy(smgr, driver);
+
+	device->getCursorControl()->setVisible(false);
+}*/
+
+void Run()
+{
+
+}
+
+int main()
+{
+	EventReceiver receiver;
+	IrrlichtDevice* device =
+		createDevice(video::EDT_DIRECT3D9, dimension2d<u32>(800, 600), 16,
+			false, false, false, &receiver);
+
+	if (!device)
 		return 1;
-	}
 
-	IAnimatedMeshSceneNode* sydneyNode = smgr->addAnimatedMeshSceneNode(sydneyMesh);
+	device->setWindowCaption(L"Hello World! - Irrlicht Engine Demo");
 
-	if (sydneyNode)
-	{
-		sydneyNode->setPosition(core::vector3df(-90, -25, 20));
-		sydneyNode->setScale(core::vector3df(1.5f));
-		scene::ITriangleSelector* selector = smgr->createTriangleSelector(sydneyNode);
-		sydneyNode->setMaterialFlag(EMF_LIGHTING, false);
-		sydneyNode->setMD2Animation(scene::EMAT_STAND);
-		sydneyNode->setMaterialTexture(0, driver->getTexture("res/media/sydney.bmp"));
-		
-		/* This part should make Sydney collidable, but doesn't really work yet
-		scene::ISceneNodeAnimator* anim = smgr->createCollisionResponseAnimator(
-			selector, sydneyNode, core::vector3df(30, 50, 30),
-			core::vector3df(0, -10, 0), core::vector3df(0, 30, 0));
-		selector->drop(); // As soon as we're done with the selector, drop it.
-		sydneyNode->addAnimator(anim);*/
-	}
+	Scene scene(device);
+	ISceneManager* smgr = scene.getSmgr();
+	IVideoDriver* driver = device->getVideoDriver();
+	IGUIEnvironment* guienv = device->getGUIEnvironment();
+	CGUIBar healthBar(30, 540, 200, 570, 100, 0, "Health");
+	CCrossHair crosshair(guienv);
+	BulletNodesManager bulletsManager;
+	bulletsManager.setSmgr(smgr);
+
+	Player player;
+	Enemy enemy(smgr, driver);
 
 	device->getCursorControl()->setVisible(false);
 
 	//FPS HANDLER
 	int lastFPS = -1;
-	// In order to do framerate independent movement, we have to know
-	// how long it was since the last frame
 	u32 then = device->getTimer()->getTime();
-
 	// This is the movemen speed in units per second.
 	const f32 MOVEMENT_SPEED = 5.f;
 
 	while (device->run())
 	{
 		ICameraSceneNode* camera = smgr->getActiveCamera();
-
 		if (device->isWindowActive())
 		{
 			healthBar.setBarValue(player.getHealth());
@@ -180,7 +144,7 @@ int main()
 			if (receiver.IsKeyDown(irr::KEY_ESCAPE))
 				break;
 
-			if (receiver.IsMouseDown(0))
+			if (receiver.IsMouseDown(0) && then % 20 == 0)
 			{
 				bulletsManager.createBullet(smgr, driver);
 			}
@@ -188,15 +152,50 @@ int main()
 			//make bullets move
 			for (int i = 0; i < bulletsManager.getBulletsShot(); ++i)
 			{
+				vector3df tmpPoint;
+				triangle3df tmpTriangle;
+				ISceneNode* node;
+				//bool collided = smgr->getSceneCollisionManager()->getCollisionPoint(
+					//bulletsManager[i].getRay(), sydneyNode->getTriangleSelector(), tmpPoint, tmpTriangle, node);
+
 				vector3df newPos = bulletsManager[i].getNode()->getPosition();
-				bulletsManager[i].getNode()->setPosition(bulletsManager[i].getVec() + newPos);
+				bulletsManager[i].getNode()->setPosition( 
+					(bulletsManager[i].getVec() + newPos) * bulletsManager[i].getSpeed());
+
+				bulletsManager[i].addDistance();
+				
+				if (bulletsManager[i].getDistance() == 1000.0f)
+				{
+					bulletsManager.removeBullet(i);
+				}
+			}
+
+			if (then % 2000 == 0)
+			{
+
+				if (player.getHealth() <= 0)
+				{
+					IGUIStaticText* text = guienv->addStaticText(L"You Lost!",
+						rect<s32>(300, 260, 500, 300), true);
+					text->setBackgroundColor(SColor());
+					text->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
+					text->setOverrideColor(SColor(255, 255, 0, 0));
+				}
+				else
+				{
+					player.setHealth(player.getHealth() - 1);
+					IGUIStaticText* text = guienv->addStaticText(L"Find and Shoot Sydney!",
+						rect<s32>(300, 50, 500, 100), false);
+
+					text->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
+					text->setOverrideColor(SColor(255, 255, 255, 255));
+				}
 			}
 
 			driver->beginScene(true, true, SColor(255, 100, 101, 140));
-
+			crosshair.draw();
 			smgr->drawAll();
 			guienv->drawAll();
-
 			healthBar.renderGUIBars(driver);
 			driver->endScene();
 
@@ -217,18 +216,6 @@ int main()
 			device->yield();
 	}
 
-	/*
-	After we are done with the render loop, we have to delete the Irrlicht
-	Device created before with createDevice(). In the Irrlicht Engine, you
-	have to delete all objects you created with a method or function which
-	starts with 'create'. The object is simply deleted by calling ->drop().
-	See the documentation at irr::IReferenceCounted::drop() for more
-	information.
-	*/
 	device->drop();
 	return 0;
 }
-
-/*
-That's it. Compile and run.
-**/

@@ -21,12 +21,15 @@ public:
 	~BulletNodesManager();
 
 	void createBullet(ISceneManager* smgr, IVideoDriver* driver);
-	void addBullet(IBillboardSceneNode* bullet, vector3df& vec);
-	void removeBullet(IBillboardSceneNode* bullet);
+	void addBullet(IBillboardSceneNode* bullet);
+	void removeBullet(int index);
 	int getBulletsShot();
+	void setSmgr(ISceneManager * p_smgr);
 	Bullet& operator[](unsigned int i);
+
 private:
 	unsigned int bulletsShot;
+	ISceneManager* smgr;
 	std::vector<Bullet> bullets;
 };
 
