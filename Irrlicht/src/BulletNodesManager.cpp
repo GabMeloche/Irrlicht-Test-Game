@@ -11,6 +11,8 @@ BulletNodesManager::BulletNodesManager()
 
 BulletNodesManager::~BulletNodesManager()
 {
+	if (smgr)
+		smgr->drop();
 }
 
 void BulletNodesManager::createBullet(ISceneManager* smgr, IVideoDriver* driver)

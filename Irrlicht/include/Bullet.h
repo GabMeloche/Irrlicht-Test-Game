@@ -18,7 +18,7 @@ class Bullet
 {
 public:
 	Bullet(int p_damage, float p_speed, line3d<f32>& p_ray, IBillboardSceneNode* p_node);
-	~Bullet() = default;
+	~Bullet();
 
 	IBillboardSceneNode * getNode();
 

@@ -59,8 +59,19 @@ Scene::Scene(IrrlichtDevice* p_device)
 
 Scene::~Scene()
 {
-	smgr->clear();
-
+	if (mapMesh)
+		mapMesh->drop();
+	if (mapNode)
+		mapNode->drop();
+	if (billboardNode)
+		billboardNode->drop();
+	if (billboardMesh)
+		billboardMesh->drop();
+	if (smgr)
+	{
+		smgr->clear();
+		smgr->drop();
+	}
 }
 
 ISceneManager* Scene::getSmgr()

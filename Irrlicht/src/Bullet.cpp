@@ -23,6 +23,15 @@ Bullet::Bullet(int p_damage, float p_speed, line3d<f32>& p_ray, IBillboardSceneN
 	node = p_node;
 }
 
+Bullet::~Bullet()
+{
+	/*if (anim)
+		anim->drop();
+
+	if (node)
+		node->drop();*/
+}
+
 IBillboardSceneNode* Bullet::getNode()
 {
 	return node;
