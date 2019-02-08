@@ -2,7 +2,7 @@
 
 Player::Player()
 {
-	health = 100;
+	health = 10;
 	score = 0;
 }
 
@@ -23,4 +23,14 @@ int Player::getHealth()
 void Player::setHealth(int p_health)
 {
 	health = p_health;
+}
+
+int Player::getScore()
+{
+	return score;
+}
+
+void Player::setScore(int p_score)
+{
+	score = p_score;
 }

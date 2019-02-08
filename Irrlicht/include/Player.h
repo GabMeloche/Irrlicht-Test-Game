@@ -9,6 +9,8 @@ public:
 
 	int getHealth();
 	void setHealth(int p_health);
+	int getScore();
+	void setScore(int p_score);
 
 private:
 	int health;

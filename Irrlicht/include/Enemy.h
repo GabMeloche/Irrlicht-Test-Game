@@ -20,6 +20,7 @@ public:
 	Enemy(ISceneManager* smgr, IVideoDriver* driver);
 	~Enemy();
 	void setRandomPos();
+	IAnimatedMeshSceneNode* getNode();
 
 private:
 	IAnimatedMeshSceneNode* node;

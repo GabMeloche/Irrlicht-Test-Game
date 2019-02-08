@@ -17,41 +17,55 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
+enum
+{
+	ID_IsNotPickable = 0,
+	IDFlag_IsPickable = 1 << 0,
+	IDFlag_IsHighlightable = 1 << 1
+};
 
 Enemy::Enemy(ISceneManager* smgr, IVideoDriver* driver)
 {
-
+	SMaterial material;
 	mesh = smgr->getMesh("res/media/sydney.md2");
 
 	assert(mesh);
 
-	node = smgr->addAnimatedMeshSceneNode(mesh);
+	node = smgr->addAnimatedMeshSceneNode(mesh, 0, IDFlag_IsPickable | IDFlag_IsHighlightable);
 
 	if (node)
 	{
 		setRandomPos();
 		node->setScale(core::vector3df(1.5f));
-		scene::ITriangleSelector* selector = smgr->createTriangleSelector(node);
-		node->setMaterialFlag(EMF_LIGHTING, false);
 		node->setMD2Animation(scene::EMAT_STAND);
+		material.setTexture(0, driver->getTexture("res/media/sydney.bmp"));
+		material.Lighting = true;
+		material.NormalizeNormals = true;
+		node->getMaterial(0) = material;
+
+		scene::ITriangleSelector* selector = smgr->createTriangleSelector(node);
+		node->setTriangleSelector(selector);
+		selector->drop();
+
+		node->setMaterialFlag(EMF_LIGHTING, false);
 		node->setMaterialTexture(0, driver->getTexture("res/media/sydney.bmp"));
 
 		const core::aabbox3d<f32>& box = node->getBoundingBox();
 		core::vector3df radius = box.MaxEdge - box.getCenter();
 
 		//This part should make Sydney collidable, but doesn't really work yet
-		scene::ISceneNodeAnimator* anim = smgr->createCollisionResponseAnimator(
+		/*scene::ISceneNodeAnimator* anim = smgr->createCollisionResponseAnimator(
 			selector, node, radius,
 			core::vector3df(0, -10, 0), core::vector3df(0, 0, 0));
 		node->addAnimator(anim);
 		selector->drop();
-		anim->drop();
+		anim->drop();*/
 	}
 }
 
 Enemy::~Enemy()
 {
-	node->drop();
+	//node->drop();
 }
 
 void Enemy::setRandomPos()
@@ -88,6 +102,11 @@ void Enemy::setRandomPos()
 		break;
 	}
 	node->setPosition(randomPos);
+}
+
+IAnimatedMeshSceneNode * Enemy::getNode()
+{
+	return node;
 }
 
 
