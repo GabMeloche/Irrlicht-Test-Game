@@ -23,6 +23,7 @@ public:
 	void createBullet(ISceneManager* smgr, IVideoDriver* driver);
 	void addBullet(IBillboardSceneNode* bullet);
 	void removeBullet(int index);
+	void moveBullets(ISceneManager* smgr);
 	int getBulletsShot();
 	void setSmgr(ISceneManager * p_smgr);
 	Bullet& operator[](unsigned int i);

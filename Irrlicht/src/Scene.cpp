@@ -40,8 +40,18 @@ Scene::Scene(IrrlichtDevice* p_device)
 	}
 
 	//CAMERA SETUP
+	SKeyMap keyMap[4];
+	keyMap[0].Action = EKA_MOVE_FORWARD;
+	keyMap[0].KeyCode = KEY_KEY_W;
+	keyMap[1].Action = EKA_MOVE_BACKWARD;
+	keyMap[1].KeyCode = KEY_KEY_S;
+	keyMap[2].Action = EKA_STRAFE_LEFT;
+	keyMap[2].KeyCode = KEY_KEY_A;
+	keyMap[3].Action = EKA_STRAFE_RIGHT;
+	keyMap[3].KeyCode = KEY_KEY_D;
+
 	scene::ICameraSceneNode* camera =
-		smgr->addCameraSceneNodeFPS(0, 100.0f, 0.3f, ID_IsNotPickable, 0, 0, true, 3.0f);
+		smgr->addCameraSceneNodeFPS(0, 100.0f, 0.3f, ID_IsNotPickable, keyMap, 4, true, 3.0f);
 	camera->setPosition(core::vector3df(50, 50, -60));
 	camera->setTarget(core::vector3df(-70, 30, -60));
 

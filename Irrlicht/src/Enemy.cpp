@@ -52,20 +52,11 @@ Enemy::Enemy(ISceneManager* smgr, IVideoDriver* driver)
 
 		const core::aabbox3d<f32>& box = node->getBoundingBox();
 		core::vector3df radius = box.MaxEdge - box.getCenter();
-
-		//This part should make Sydney collidable, but doesn't really work yet
-		/*scene::ISceneNodeAnimator* anim = smgr->createCollisionResponseAnimator(
-			selector, node, radius,
-			core::vector3df(0, -10, 0), core::vector3df(0, 0, 0));
-		node->addAnimator(anim);
-		selector->drop();
-		anim->drop();*/
 	}
 }
 
 Enemy::~Enemy()
 {
-	//node->drop();
 }
 
 void Enemy::setRandomPos()

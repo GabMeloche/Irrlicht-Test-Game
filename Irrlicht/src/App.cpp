@@ -1,47 +1,3 @@
-/** Example 001 HelloWorld
-
-This Tutorial shows how to set up the IDE for using the Irrlicht Engine and how
-to write a simple HelloWorld program with it. The program will show how to use
-the basics of the VideoDriver, the GUIEnvironment, and the SceneManager.
-Microsoft Visual Studio is used as an IDE, but you will also be able to
-understand everything if you are using a different one or even another
-operating system than windows.
-
-You have to include the header file <irrlicht.h> in order to use the engine. The
-header file can be found in the Irrlicht Engine SDK directory \c include. To let
-the compiler find this header file, the directory where it is located has to be
-specified. This is different for every IDE and compiler you use. Let's explain
-shortly how to do this in Microsoft Visual Studio:
-
-- If you use Version 6.0, select the Menu Extras -> Options.
-Select the directories tab, and select the 'Include' Item in the combo box.
-Add the \c include directory of the irrlicht engine folder to the list of
-directories. Now the compiler will find the Irrlicht.h header file. We also
-need the irrlicht.lib to be found, so stay in that dialog, select 'Libraries'
-in the combo box and add the \c lib/VisualStudio directory.
-\image html "vc6optionsdir.jpg"
-\image latex "vc6optionsdir.jpg"
-\image html "vc6include.jpg"
-\image latex "vc6include.jpg"
-
-- If your IDE is Visual Studio .NET, select Tools -> Options.
-Select the projects entry and then select VC++ directories. Select 'show
-directories for include files' in the combo box, and add the \c include
-directory of the irrlicht engine folder to the list of directories. Now the
-compiler will find the Irrlicht.h header file. We also need the irrlicht.lib
-to be found, so stay in that dialog, select 'show directories for Library
-files' and add the \c lib/VisualStudio directory.
-\image html "vcnetinclude.jpg"
-\image latex "vcnetinclude.jpg"
-
-That's it. With your IDE set up like this, you will now be able to develop
-applications with the Irrlicht Engine.
-
-Lets start!
-
-After we have set up the IDE, the compiler will know where to find the Irrlicht
-Engine header files so we can include it now in our code.
-*/
 #include <irrlicht.h>
 #include <EventReceiver.h>
 #include <Scene.h>
@@ -68,6 +24,36 @@ enum
 	IDFlag_IsHighlightable = 1 << 1
 };
 
+void drawText(IGUIEnvironment* guienv, Player& player)
+{
+	if (player.getHealth() <= 0)
+	{
+		IGUIStaticText* text = guienv->addStaticText(L"GAME OVER",
+			rect<s32>(300, 260, 500, 300), true);
+		text->setBackgroundColor(SColor());
+		text->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
+		text->setOverrideColor(SColor(255, 255, 0, 0));
+
+		std::string scoreString = "Score: " + std::to_string(player.getScore());
+		std::wstring scoreWString = std::wstring(scoreString.begin(), scoreString.end());
+		const wchar_t* score = scoreWString.c_str();
+
+		IGUIStaticText* textScore = guienv->addStaticText(score,
+			rect<s32>(300, 310, 500, 340), false);
+		textScore->setBackgroundColor(SColor());
+		textScore->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
+	}
+	else
+	{
+		player.setHealth(player.getHealth() - 1);
+		IGUIStaticText* text = guienv->addStaticText(L"Find and Shoot Sydney!",
+			rect<s32>(300, 50, 500, 100), false);
+
+		text->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
+		text->setOverrideColor(SColor(255, 255, 255, 255));
+	}
+}
+
 int Run()
 {
 	EventReceiver receiver;
@@ -83,8 +69,8 @@ int Run()
 	Scene scene(device);
 	ISceneManager* smgr = scene.getSmgr();
 	IVideoDriver* driver = device->getVideoDriver();
-	IGUIEnvironment* guienv = device->getGUIEnvironment();
 	ISceneCollisionManager* collMan = smgr->getSceneCollisionManager();
+	IGUIEnvironment* guienv = device->getGUIEnvironment();
 	CGUIBar healthBar(30, 540, 200, 570, 100, 0, "Health");
 	CCrossHair crosshair(guienv);
 	BulletNodesManager bulletsManager;
@@ -98,7 +84,8 @@ int Run()
 	//FPS HANDLER
 	int lastFPS = -1;
 	u32 then = device->getTimer()->getTime();
-	// This is the movemen speed in units per second.
+
+	// This is the movement speed in units per second.
 	const f32 MOVEMENT_SPEED = 5.f;
 
 	while (device->run())
@@ -119,20 +106,12 @@ int Run()
 				bulletsManager.createBullet(smgr, driver);
 			}
 
-			//make bullets move
+			//make all bullets move
+			bulletsManager.moveBullets(smgr);
+
 			for (int i = 0; i < bulletsManager.getBulletsShot(); ++i)
 			{
-				vector3df tmpPoint;
-				triangle3df tmpTriangle;
-				ISceneNode* node;
-
-				vector3df newPos = bulletsManager[i].getNode()->getPosition();
-				bulletsManager[i].getNode()->setPosition(
-					(bulletsManager[i].getVec() + newPos) * bulletsManager[i].getSpeed());
-
-				bulletsManager[i].addDistance();
-
-			//Collisions check
+				//Collisions check
 				core::vector3df intersection;
 				core::triangle3df hitTriangle;
 
@@ -146,12 +125,10 @@ int Run()
 
 				if (selectedSceneNode == enemy.getNode())
 				{
-					std::cout << "hit enemy\n";
 					enemy.setRandomPos();
 					selectedSceneNode = 0;
 					player.setScore(player.getScore() + 1);
-					std::cout << "score: " << player.getScore() << std::endl;
-					
+					//std::cout << "score: " << player.getScore() << std::endl;			
 				}
 
 				if (bulletsManager[i].getDistance() == 1000.0f)
@@ -160,35 +137,9 @@ int Run()
 				}
 			}
 
-			if (then % 1000 == 0)
+			if (then % 500 == 0)
 			{
-
-				if (player.getHealth() <= 0)
-				{
-						IGUIStaticText* text = guienv->addStaticText(L"GAME OVER",
-							rect<s32>(300, 260, 500, 300), true);
-						text->setBackgroundColor(SColor());
-						text->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
-						text->setOverrideColor(SColor(255, 255, 0, 0));
-
-						std::string scoreString = "Score: " + std::to_string(player.getScore());
-						std::wstring scoreWString = std::wstring(scoreString.begin(), scoreString.end());
-						const wchar_t* score = scoreWString.c_str();
-
-						IGUIStaticText* textScore = guienv->addStaticText(score,
-							rect<s32>(300, 310, 500, 340), false);
-						textScore->setBackgroundColor(SColor());
-						textScore->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
-				}
-				else
-				{
-					player.setHealth(player.getHealth() - 1);
-					IGUIStaticText* text = guienv->addStaticText(L"Find and Shoot Sydney!",
-						rect<s32>(300, 50, 500, 100), false);
-
-					text->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
-					text->setOverrideColor(SColor(255, 255, 255, 255));
-				}
+				drawText(guienv, player);
 			}
 
 			driver->beginScene(true, true, SColor(255, 100, 101, 140));
@@ -218,6 +169,7 @@ int Run()
 	device->drop();
 	return 0;
 }
+
 
 int main()
 {

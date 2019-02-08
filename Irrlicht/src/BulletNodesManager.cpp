@@ -1,13 +1,10 @@
 #include <BulletNodesManager.h>
 #include <Bullet.h>
 
-
-
 BulletNodesManager::BulletNodesManager()
 {
 	bulletsShot = 0;
 }
-
 
 BulletNodesManager::~BulletNodesManager()
 {
@@ -55,6 +52,24 @@ void BulletNodesManager::removeBullet(int index)
 			bullets.erase(bullets.begin() + i);
 			--bulletsShot;
 		}
+	}
+}
+
+void BulletNodesManager::moveBullets(ISceneManager* smgr)
+{
+	ISceneCollisionManager* collMan = smgr->getSceneCollisionManager();
+
+	for (int i = 0; i < getBulletsShot(); ++i)
+	{
+		vector3df tmpPoint;
+		triangle3df tmpTriangle;
+		ISceneNode* node;
+
+		vector3df newPos = bullets[i].getNode()->getPosition();
+		bullets[i].getNode()->setPosition(
+			(bullets[i].getVec() + newPos) * bullets[i].getSpeed());
+
+		bullets[i].addDistance();
 	}
 }
 

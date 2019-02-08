@@ -2,7 +2,7 @@
 
 Player::Player()
 {
-	health = 10;
+	health = 100;
 	score = 0;
 }
 
